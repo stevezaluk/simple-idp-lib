@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/google/uuid"
+	"github.com/stevezaluk/simple-idp-lib/uuid"
 )
 
 type TokenType string
@@ -44,13 +44,13 @@ type API struct {
 NewAPI - A constructor for the API object
 */
 func NewAPI(name string, audience string, tokenType TokenType) (*API, error) {
-	identifier, err := uuid.NewV6()
+	identifier, err := uuid.GenerateUUID()
 	if err != nil {
 		return nil, err
 	}
 
 	return &API{
-		Id:            identifier.String(),
+		Id:            identifier,
 		Name:          name,
 		Audience:      audience,
 		TokenType:     tokenType,
