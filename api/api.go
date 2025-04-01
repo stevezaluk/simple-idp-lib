@@ -1,5 +1,9 @@
 package api
 
+import (
+	"github.com/google/uuid"
+)
+
 type TokenType string
 
 const (
@@ -39,12 +43,17 @@ type API struct {
 /*
 NewAPI - A constructor for the API object
 */
-func NewAPI(name string, audience string, tokenType TokenType) *API {
-	// identifier still needs to be added
+func NewAPI(name string, audience string, tokenType TokenType) (*API, error) {
+	identifier, err := uuid.NewV6()
+	if err != nil {
+		return nil, err
+	}
 
 	return &API{
-		Name:      name,
-		Audience:  audience,
-		TokenType: tokenType,
-	}
+		Id:            identifier.String(),
+		Name:          name,
+		Audience:      audience,
+		TokenType:     tokenType,
+		TokenLifetime: 86400,
+	}, nil
 }
