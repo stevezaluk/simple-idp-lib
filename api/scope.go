@@ -29,5 +29,5 @@ func NewScope(name string, description string) (*Scope, error) {
 		Id:          identifier,
 		Name:        name,
 		Description: description,
-	}
+	}, nil
 }
