@@ -27,13 +27,13 @@ type Application struct {
 	Name string `json:"name"`
 
 	// GrantType - The OAuth grant type that you want to assign to this application
-	GrantType GrantType `json:"grantType"`
+	GrantType GrantType `json:"grant_type"`
 
 	// ClientID - A base64 random string representing the clientId
-	ClientID string `json:"clientId"`
+	ClientID string `json:"client_id"`
 
 	// ClientSecret - A 256-bit random string
-	ClientSecret string `json:"clientSecret"`
+	ClientSecret string `json:"client_secret"`
 }
 
 /*

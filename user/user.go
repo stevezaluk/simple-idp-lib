@@ -16,7 +16,7 @@ type User struct {
 	Email string `json:"email"`
 
 	// EmailVerified - A boolean value describing if the user has validated there email
-	EmailVerified bool `json:"emailVerified"`
+	EmailVerified bool `json:"email_verified"`
 
 	// Roles - A list of role ID's that the user is assigned
 	Roles []string `json:"roles"`

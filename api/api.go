@@ -25,19 +25,19 @@ type API struct {
 	Audience string `json:"audience"`
 
 	// TokenType - The type of JWT's that this API can issue. Can either be RS256 or HS256
-	TokenType TokenType `json:"tokenType"`
+	TokenType TokenType `json:"token_type"`
 
 	// TokenLifetime - The number of seconds in which a token should expire
-	TokenLifetime int `json:"tokenLifetime"`
+	TokenLifetime int `json:"token_lifetime"`
 
 	// Permissions - Any permissions that this API can utilize
 	Permissions []Scope `json:"permissions"`
 
 	// AddPermissions - Determines if permissions should be added to tokens
-	AddPermissions bool `json:"addPermissions"`
+	AddPermissions bool `json:"add_permissions"`
 
 	// AddRefreshToken - Determines if refresh tokens can be issued for this API
-	AddRefreshToken bool `json:"addRefreshToken"`
+	AddRefreshToken bool `json:"add_refresh_token"`
 }
 
 /*
