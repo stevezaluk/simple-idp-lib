@@ -47,6 +47,20 @@ func NewDatabase(hostname string, port int, defaultDatabase string) *Database {
 }
 
 /*
+Client - Getter function for returning a reference to the MongoDB client
+*/
+func (database *Database) Client() *mongo.Client {
+	return database.client
+}
+
+/*
+Database - Getter function for returning a reference to the MongoDB database
+*/
+func (database *Database) Database() *mongo.Database {
+	return database.database
+}
+
+/*
 SetSCRAMAuthentication - Set the credentials for the database connection if they are needed
 */
 func (database *Database) SetSCRAMAuthentication(username string, password string) {
