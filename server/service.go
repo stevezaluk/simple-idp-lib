@@ -18,10 +18,18 @@ type Service struct {
 }
 
 /*
-NewService - A constructor for the Service object
+New - A constructor for the Service object
 */
-func NewService(name string) *Service {
+func New(name string) *Service {
 	return &Service{
 		Name: name,
 	}
+}
+
+/*
+FromConfig - A wrapper for New that initializes the micro-service from
+predefined values in Viper
+*/
+func FromConfig() *Service {
+	return &Service{}
 }
