@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 	"log/slog"
@@ -44,6 +45,27 @@ func NewDatabase(hostname string, port int, defaultDatabase string) *Database {
 		options:         clientOptions,
 		defaultDatabase: defaultDatabase,
 	}
+}
+
+/*
+NewDatabaseFromConfig - A wrapper for NewDatabase. Constructs a new database from
+configuration values passed in Viper
+*/
+func NewDatabaseFromConfig() *Database {
+	database := NewDatabase(
+		viper.GetString("mongo.hostname"),
+		viper.GetInt("mongo.port"),
+		viper.GetString("mongo.default_database"),
+	)
+
+	database.SetSCRAMAuthentication(
+		viper.GetString("mongo.username"),
+		viper.GetString("mongo.password"),
+	)
+
+	database.Connect()
+
+	return database
 }
 
 /*
