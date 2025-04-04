@@ -1,6 +1,12 @@
 package application
 
-import "github.com/stevezaluk/simple-idp-lib/uuid"
+import (
+	"crypto/sha256"
+	"encoding/base64"
+	"encoding/hex"
+	"github.com/stevezaluk/simple-idp-lib/rand"
+	"github.com/stevezaluk/simple-idp-lib/uuid"
+)
 
 type GrantType string
 
@@ -26,7 +32,7 @@ type Application struct {
 	// ClientID - A base64 random string representing the clientId
 	ClientID string `json:"clientId"`
 
-	// ClientSecret - A SHA256 hash of a randomly generated string
+	// ClientSecret - A 256-bit random string
 	ClientSecret string `json:"clientSecret"`
 }
 
@@ -39,9 +45,40 @@ func NewApplication(name string, grantType GrantType) (*Application, error) {
 		return nil, err
 	}
 
-	return &Application{
+	app := &Application{
 		Id:        identifier,
 		Name:      name,
 		GrantType: grantType,
-	}, nil
+	}
+
+	err = app.generateClientCredentials()
+	if err != nil {
+		return nil, err
+	}
+
+	return app, nil
+}
+
+/*
+generateClientCredentials - Generates a new ClientID and ClientSecret for
+the application to use
+*/
+func (application *Application) generateClientCredentials() error {
+
+	clientIdSeed, err := rand.Seed(64)
+	if err != nil {
+		return err
+	}
+
+	clientSecretSeed, err := rand.Seed(64)
+	if err != nil {
+		return err
+	}
+
+	clientSecret := sha256.New()
+
+	application.ClientID = base64.URLEncoding.EncodeToString(clientIdSeed)
+	application.ClientSecret = hex.EncodeToString(clientSecret.Sum(clientSecretSeed))
+
+	return nil
 }
