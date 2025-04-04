@@ -1,8 +1,10 @@
 package server
 
 import (
+	"context"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
+	"log/slog"
 	"strconv"
 	"time"
 )
@@ -42,4 +44,39 @@ func NewDatabase(hostname string, port int, defaultDatabase string) *Database {
 		options:         clientOptions,
 		defaultDatabase: defaultDatabase,
 	}
+}
+
+/*
+SetSCRAMAuthentication - Set the credentials for the database connection if they are needed
+*/
+func (database *Database) SetSCRAMAuthentication(username string, password string) {
+	credentials := options.Credential{
+		AuthMechanism: "SCRAM-SHA-256",
+		AuthSource:    "admin",
+		Username:      username,
+		Password:      password,
+	}
+
+	database.options.SetAuth(credentials)
+}
+
+/*
+Connect to the MongoDB instance defined in the Database object
+*/
+func (database *Database) Connect() {
+	slog.Info("Starting connection to MongoDB")
+	client, err := mongo.Connect(database.options)
+	if err != nil {
+		slog.Error("Failed to connect to database", "err", err)
+		panic(err)
+	}
+
+	err = client.Ping(context.Background(), nil)
+	if err != nil {
+		slog.Error("Failed to ping database after connecting", "err", err)
+		panic(err)
+	}
+
+	database.client = client
+	database.database = database.client.Database(database.defaultDatabase)
 }
