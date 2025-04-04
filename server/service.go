@@ -1,13 +1,16 @@
 package server
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
+)
 
 /*
 Service - An abstraction of a Micro-Service. Responsible for exposing the underlying
 gin REST API and providing a connection to MongoDB
 */
 type Service struct {
-	// Name - The name of the micro-service
+	// Name - The name of the Service
 	Name string
 
 	// router - The gin router responsible for
@@ -20,16 +23,20 @@ type Service struct {
 /*
 New - A constructor for the Service object
 */
-func New(name string) *Service {
+func New(name string, database *Database) *Service {
 	return &Service{
-		Name: name,
+		Name:     name,
+		database: database,
 	}
 }
 
 /*
-FromConfig - A wrapper for New that initializes the micro-service from
-predefined values in Viper
+FromConfig - A wrapper around New. Constructs a new Service
+struct using values provided by Viper
 */
 func FromConfig() *Service {
-	return &Service{}
+	return New(
+		viper.GetString("name"),
+		NewDatabaseFromConfig(),
+	)
 }
