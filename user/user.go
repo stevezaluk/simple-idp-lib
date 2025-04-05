@@ -31,10 +31,10 @@ type User struct {
 }
 
 /*
-NewUser - A constructor for the User structure
+New - A constructor for the User structure
 */
-func NewUser(username string, email string, password string) (*User, error) {
-	meta, err := metadata.NewMetadata()
+func New(username string, email string, password string) (*User, error) {
+	meta, err := metadata.New()
 	if err != nil {
 		return nil, err
 	}

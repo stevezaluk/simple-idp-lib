@@ -25,7 +25,7 @@ type Scope struct {
 NewScope - A constructor for the Scope object
 */
 func NewScope(name string, description string) (*Scope, error) {
-	meta, err := metadata.NewMetadata()
+	meta, err := metadata.New()
 	if err != nil {
 		return nil, err
 	}

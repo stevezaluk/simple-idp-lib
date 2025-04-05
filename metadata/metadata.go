@@ -23,9 +23,9 @@ type Metadata struct {
 }
 
 /*
-NewMetadata - A constructor for the Metadata structure
+New - A constructor for the Metadata structure
 */
-func NewMetadata() (*Metadata, error) {
+func New() (*Metadata, error) {
 	identifier, err := uuid.NewV6()
 	if err != nil {
 		return nil, err

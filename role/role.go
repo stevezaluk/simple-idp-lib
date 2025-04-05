@@ -23,10 +23,10 @@ type Role struct {
 }
 
 /*
-NewRole -A constructor for the role structure
+New -A constructor for the role structure
 */
-func NewRole(name string) (*Role, error) {
-	meta, err := metadata.NewMetadata()
+func New(name string) (*Role, error) {
+	meta, err := metadata.New()
 	if err != nil {
 		return nil, err
 	}

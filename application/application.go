@@ -37,10 +37,10 @@ type Application struct {
 }
 
 /*
-NewApplication - A constructor for the Application struct
+New - A constructor for the Application struct
 */
-func NewApplication(name string, grantType []GrantType) (*Application, error) {
-	meta, err := metadata.NewMetadata()
+func New(name string, grantType []GrantType) (*Application, error) {
+	meta, err := metadata.New()
 	if err != nil {
 		return nil, err
 	}
