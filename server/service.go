@@ -31,13 +31,13 @@ type Service struct {
 /*
 New - A constructor for the Service object
 */
-func New(name string, database *Database) *Service {
+func New(name string, port int, database *Database) *Service {
 	router := gin.New()
 	router.Use(gin.Recovery())
 
 	return &Service{
 		Name:     name,
-		Port:     8080,
+		Port:     port,
 		router:   router,
 		database: database,
 	}
@@ -50,6 +50,7 @@ struct using values provided by Viper
 func FromConfig() *Service {
 	return New(
 		viper.GetString("name"),
+		viper.GetInt("port"),
 		NewDatabaseFromConfig(),
 	)
 }
