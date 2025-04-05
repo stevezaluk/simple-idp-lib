@@ -1,7 +1,7 @@
 package metadata
 
 import (
-	"github.com/stevezaluk/simple-idp-lib/uuid"
+	"github.com/google/uuid"
 	"time"
 )
 
@@ -26,7 +26,7 @@ type Metadata struct {
 NewMetadata - A constructor for the Metadata structure
 */
 func NewMetadata() (*Metadata, error) {
-	identifier, err := uuid.GenerateUUID()
+	identifier, err := uuid.NewV6()
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func NewMetadata() (*Metadata, error) {
 	timestamp := time.Now().UTC().UnixNano()
 
 	return &Metadata{
-		Id:           identifier,
+		Id:           identifier.String(),
 		CreationDate: timestamp,
 		ModifiedDate: timestamp,
 		Tags:         map[string]string{},
