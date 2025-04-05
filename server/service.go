@@ -55,6 +55,13 @@ func FromConfig() *Service {
 }
 
 /*
+Database - Getter function for returning a pointer to the database
+*/
+func (service *Service) Database() *Database {
+	return service.database
+}
+
+/*
 RegisterEndpoint - Wraps the gin function gin.Engine.Handle and registers a new endpoint with the
 router. The 'handler' parameter should be the logic of your endpoint using the HandlerFunc type
 */
