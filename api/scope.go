@@ -1,11 +1,16 @@
 package api
 
-import "github.com/stevezaluk/simple-idp-lib/uuid"
+import (
+	"github.com/stevezaluk/simple-idp-lib/metadata"
+)
 
 /*
 Scope - A user defined permission that can restrict access to resources. Attached at the API level
 */
 type Scope struct {
+	// Metadata - General metadata for the structure
+	Metadata *metadata.Metadata `json:"metadata"`
+
 	// Id - A UUID acting as a unique identifier for the Scope
 	Id string `json:"id"`
 
@@ -20,13 +25,13 @@ type Scope struct {
 NewScope - A constructor for the Scope object
 */
 func NewScope(name string, description string) (*Scope, error) {
-	identifier, err := uuid.GenerateUUID()
+	meta, err := metadata.NewMetadata()
 	if err != nil {
 		return nil, err
 	}
 
 	return &Scope{
-		Id:          identifier,
+		Metadata:    meta,
 		Name:        name,
 		Description: description,
 	}, nil

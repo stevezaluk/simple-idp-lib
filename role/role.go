@@ -1,14 +1,16 @@
 package role
 
-import "github.com/stevezaluk/simple-idp-lib/uuid"
+import (
+	"github.com/stevezaluk/simple-idp-lib/metadata"
+)
 
 /*
 Role - A user defined role that be attached to a User. Provides a structure
 to attach permissions to
 */
 type Role struct {
-	// Id - A UUID acting as a unique identifier for the Role
-	Id string `json:"id"`
+	// Metadata - General metadata for the structure
+	Metadata *metadata.Metadata `json:"metadata"`
 
 	// Name - The name of the role. Cannot include spaces
 	Name string `json:"name"`
@@ -24,13 +26,13 @@ type Role struct {
 NewRole -A constructor for the role structure
 */
 func NewRole(name string) (*Role, error) {
-	identifier, err := uuid.GenerateUUID()
+	meta, err := metadata.NewMetadata()
 	if err != nil {
 		return nil, err
 	}
 
 	return &Role{
-		Id:   identifier,
-		Name: name,
+		Metadata: meta,
+		Name:     name,
 	}, nil
 }

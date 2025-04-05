@@ -4,8 +4,8 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
+	"github.com/stevezaluk/simple-idp-lib/metadata"
 	"github.com/stevezaluk/simple-idp-lib/rand"
-	"github.com/stevezaluk/simple-idp-lib/uuid"
 )
 
 type GrantType string
@@ -20,8 +20,8 @@ Application - A user defined application. Users will define these and authorize 
 to use API's that are defined
 */
 type Application struct {
-	// Id - A UUID acting as a unique identifier for the Application
-	Id string `json:"id"`
+	// Metadata - General metadata for the structure
+	Metadata *metadata.Metadata `json:"metadata"`
 
 	// Name - The name of the Application
 	Name string `json:"name"`
@@ -40,13 +40,13 @@ type Application struct {
 NewApplication - A constructor for the Application struct
 */
 func NewApplication(name string, grantType GrantType) (*Application, error) {
-	identifier, err := uuid.GenerateUUID()
+	meta, err := metadata.NewMetadata()
 	if err != nil {
 		return nil, err
 	}
 
 	app := &Application{
-		Id:        identifier,
+		Metadata:  meta,
 		Name:      name,
 		GrantType: grantType,
 	}

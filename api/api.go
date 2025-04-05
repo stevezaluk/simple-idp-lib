@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/stevezaluk/simple-idp-lib/uuid"
+	"github.com/stevezaluk/simple-idp-lib/metadata"
 )
 
 type TokenType string
@@ -15,8 +15,8 @@ const (
 API - A user defined application that defines how you can issue tokens
 */
 type API struct {
-	// Id - A UUID acting as a unique identifier for the API
-	Id string `json:"id"`
+	// Metadata - General metadata for the structure
+	Metadata *metadata.Metadata `json:"metadata"`
 
 	// Name - The name of the API
 	Name string `json:"name"`
@@ -44,13 +44,13 @@ type API struct {
 NewAPI - A constructor for the API object
 */
 func NewAPI(name string, audience string, tokenType TokenType) (*API, error) {
-	identifier, err := uuid.GenerateUUID()
+	meta, err := metadata.NewMetadata()
 	if err != nil {
 		return nil, err
 	}
 
 	return &API{
-		Id:            identifier,
+		Metadata:      meta,
 		Name:          name,
 		Audience:      audience,
 		TokenType:     tokenType,

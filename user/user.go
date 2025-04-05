@@ -1,13 +1,15 @@
 package user
 
-import "github.com/stevezaluk/simple-idp-lib/uuid"
+import (
+	"github.com/stevezaluk/simple-idp-lib/metadata"
+)
 
 /*
 User - A structure representing a user accessing an API
 */
 type User struct {
-	// Id - A UUID acting as a unique identifier for the User
-	Id string `json:"id"`
+	// Metadata - General metadata for the structure
+	Metadata *metadata.Metadata `json:"metadata"`
 
 	// Username - A distinct name for the user. Cannot conflict with other usernames
 	Username string `json:"username"`
@@ -32,13 +34,13 @@ type User struct {
 NewUser - A constructor for the User structure
 */
 func NewUser(username string, email string, password string) (*User, error) {
-	identifier, err := uuid.GenerateUUID()
+	meta, err := metadata.NewMetadata()
 	if err != nil {
 		return nil, err
 	}
 
 	return &User{
-		Id:            identifier,
+		Metadata:      meta,
 		Username:      username,
 		Email:         email,
 		EmailVerified: false,
