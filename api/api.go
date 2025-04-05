@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/stevezaluk/simple-idp-lib/metadata"
+	"github.com/stevezaluk/simple-idp-lib/scope"
 )
 
 type TokenType string
@@ -31,7 +32,7 @@ type API struct {
 	TokenLifetime int `json:"token_lifetime"`
 
 	// Permissions - Any permissions that this API can utilize
-	Permissions []Scope `json:"permissions"`
+	Permissions []scope.Scope `json:"permissions"`
 
 	// AddPermissions - Determines if permissions should be added to tokens
 	AddPermissions bool `json:"add_permissions"`
@@ -41,10 +42,10 @@ type API struct {
 }
 
 /*
-NewAPI - A constructor for the API object
+New - A constructor for the API object
 */
-func NewAPI(name string, audience string, tokenType TokenType) (*API, error) {
-	meta, err := metadata.NewMetadata()
+func New(name string, audience string, tokenType TokenType) (*API, error) {
+	meta, err := metadata.New()
 	if err != nil {
 		return nil, err
 	}

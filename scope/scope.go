@@ -1,4 +1,4 @@
-package api
+package scope
 
 import (
 	"github.com/stevezaluk/simple-idp-lib/metadata"
@@ -11,9 +11,6 @@ type Scope struct {
 	// Metadata - General metadata for the structure
 	Metadata *metadata.Metadata `json:"metadata"`
 
-	// Id - A UUID acting as a unique identifier for the Scope
-	Id string `json:"id"`
-
 	// Name - The name of the permission scope. Should follow the following format: action:resource
 	Name string `json:"identifier"`
 
@@ -22,9 +19,9 @@ type Scope struct {
 }
 
 /*
-NewScope - A constructor for the Scope object
+New - A constructor for the Scope object
 */
-func NewScope(name string, description string) (*Scope, error) {
+func New(name string, description string) (*Scope, error) {
 	meta, err := metadata.New()
 	if err != nil {
 		return nil, err
