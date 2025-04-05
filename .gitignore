@@ -26,3 +26,7 @@ go.work.sum
 
 # IDEA files
 .idea
+
+# Notes
+.notes.txt
+
