@@ -27,7 +27,7 @@ type Application struct {
 	Name string `json:"name"`
 
 	// GrantType - The OAuth grant type that you want to assign to this application
-	GrantType GrantType `json:"grant_type"`
+	GrantType []GrantType `json:"grant_type"`
 
 	// ClientID - A base64 random string representing the clientId
 	ClientID string `json:"client_id"`
@@ -39,7 +39,7 @@ type Application struct {
 /*
 NewApplication - A constructor for the Application struct
 */
-func NewApplication(name string, grantType GrantType) (*Application, error) {
+func NewApplication(name string, grantType []GrantType) (*Application, error) {
 	meta, err := metadata.NewMetadata()
 	if err != nil {
 		return nil, err
