@@ -113,6 +113,7 @@ func (database *Database) Connect() {
 		panic(err)
 	}
 
+	slog.Info("Successfully connected to DB")
 	database.client = client
 	database.database = database.client.Database(database.defaultDatabase)
 }
