@@ -21,18 +21,24 @@ type Database struct {
 	// defaultDatabase - The database the client will connect to by default
 	defaultDatabase string
 
+	// defaultCollection - The collection that the client will use by default
+	defaultCollection string
+
 	// client - The MongoDB client that establishes our connection with the Database
 	client *mongo.Client
 
 	// database - The MongoDB database that controls our interaction with the data
 	database *mongo.Database
+
+	// collection - The MongoDB database that controls our interaction with the collection
+	collection *mongo.Collection
 }
 
 /*
 NewDatabase - A constructor for the database object. This exists in the event the caller
 wants to create a new database object without using Viper
 */
-func NewDatabase(hostname string, port int, defaultDatabase string) *Database {
+func NewDatabase(hostname string, port int, defaultDatabase string, defaultCollection string) *Database {
 	hosts := hostname + ":" + strconv.Itoa(port)
 
 	clientOptions := options.Client().
@@ -42,8 +48,9 @@ func NewDatabase(hostname string, port int, defaultDatabase string) *Database {
 		SetTimeout(30 * time.Second)
 
 	return &Database{
-		options:         clientOptions,
-		defaultDatabase: defaultDatabase,
+		options:           clientOptions,
+		defaultDatabase:   defaultDatabase,
+		defaultCollection: defaultCollection,
 	}
 }
 
@@ -56,6 +63,7 @@ func NewDatabaseFromConfig() *Database {
 		viper.GetString("mongo.hostname"),
 		viper.GetInt("mongo.port"),
 		viper.GetString("mongo.default_database"),
+		viper.GetString("mongo.default_collection"),
 	)
 
 	database.SetSCRAMAuthentication(
@@ -76,10 +84,17 @@ func (database *Database) Client() *mongo.Client {
 }
 
 /*
-Database - Getter function for returning a reference to the MongoDB database
+Database - Getter function for returning a pointer to the MongoDB database
 */
 func (database *Database) Database() *mongo.Database {
 	return database.database
+}
+
+/*
+Collection - Getter function for returning a pointer to the MongoDB collection
+*/
+func (database *Database) Collection() *mongo.Collection {
+	return database.collection
 }
 
 /*
@@ -116,4 +131,5 @@ func (database *Database) Connect() {
 	slog.Info("Successfully connected to DB")
 	database.client = client
 	database.database = database.client.Database(database.defaultDatabase)
+	database.collection = database.database.Collection(database.defaultCollection)
 }
