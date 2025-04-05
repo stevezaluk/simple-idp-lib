@@ -9,13 +9,13 @@ Scope - A user defined permission that can restrict access to resources. Attache
 */
 type Scope struct {
 	// Metadata - General metadata for the structure
-	Metadata *metadata.Metadata `json:"metadata"`
+	Metadata *metadata.Metadata `json:"metadata" bson:"metadata"`
 
 	// Name - The name of the permission scope. Should follow the following format: action:resource
-	Name string `json:"identifier"`
+	Name string `json:"name" bson:"name"`
 
 	// Description - A description for what the scope does
-	Description string `json:"description"`
+	Description string `json:"description" bson:"description"`
 }
 
 /*

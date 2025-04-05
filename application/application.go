@@ -21,19 +21,19 @@ to use API's that are defined
 */
 type Application struct {
 	// Metadata - General metadata for the structure
-	Metadata *metadata.Metadata `json:"metadata"`
+	Metadata *metadata.Metadata `json:"metadata" bson:"metadata"`
 
 	// Name - The name of the Application
-	Name string `json:"name"`
+	Name string `json:"name" bson:"name"`
 
 	// GrantType - The OAuth grant type that you want to assign to this application
-	GrantType []GrantType `json:"grant_type"`
+	GrantType []GrantType `json:"grant_type" bson:"grant_type"`
 
 	// ClientID - A base64 random string representing the clientId
-	ClientID string `json:"client_id"`
+	ClientID string `json:"client_id" bson:"client_id"`
 
 	// ClientSecret - A 256-bit random string
-	ClientSecret string `json:"client_secret"`
+	ClientSecret string `json:"client_secret" bson:"client_secret"`
 }
 
 /*

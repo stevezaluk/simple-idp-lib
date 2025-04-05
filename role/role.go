@@ -10,16 +10,16 @@ to attach permissions to
 */
 type Role struct {
 	// Metadata - General metadata for the structure
-	Metadata *metadata.Metadata `json:"metadata"`
+	Metadata *metadata.Metadata `json:"metadata" bson:"metadata"`
 
 	// Name - The name of the role. Cannot include spaces
-	Name string `json:"name"`
+	Name string `json:"name" bson:"name"`
 
 	// Description - A description for what the role provides
-	Description string `json:"description"`
+	Description string `json:"description" bson:"description"`
 
 	// Permissions - A list of permission Id's that the role is assigned
-	Permissions []string `json:"permissions"`
+	Permissions []string `json:"permissions" bson:"permissions"`
 }
 
 /*
