@@ -7,6 +7,7 @@ import (
 	"strconv"
 )
 
+// HandlerFunc - A wrapper for your gin middleware
 type HandlerFunc func(service *Service) func(c *gin.Context)
 
 /*
