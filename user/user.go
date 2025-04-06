@@ -31,9 +31,12 @@ type User struct {
 }
 
 /*
-New - A constructor for the User structure
+New - A constructor for the User structure. Notably you do not declare a password
+for the user here, only when you call CreateUser. This is to ensure that the User structure
+does not need to be sanitized when fetching it from the database, resulting in more places
+in memory the password is stored in
 */
-func New(username string, email string, password string) (*User, error) {
+func New(username string, email string) (*User, error) {
 	meta, err := metadata.New()
 	if err != nil {
 		return nil, err
