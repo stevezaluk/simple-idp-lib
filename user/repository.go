@@ -8,8 +8,11 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
-var ErrCreateUserFailed = errors.New("failed to create user")
-var ErrDeleteUserFailed = errors.New("failed to delete user")
+var ErrUserAlreadyExists = errors.New("user: User already exists")
+var ErrUserDoesNotExist = errors.New("user: Does not exist")
+var ErrFetchUserFailed = errors.New("user: Failed to fetch user")
+var ErrCreateUserFailed = errors.New("user: Failed to create user")
+var ErrDeleteUserFailed = errors.New("user: Failed to delete user")
 
 /*
 GetUser - Fetch a users metadata using its email address
@@ -24,7 +27,10 @@ func GetUser(database *server.Database, email string, excludeCreds bool) (*User,
 
 	err := database.Find(bson.M{"email": email}, &ret, exclusion)
 	if err != nil {
-		return nil, err
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return nil, ErrUserDoesNotExist
+		}
+		return nil, fmt.Errorf("%w: (%s)", ErrFetchUserFailed, err)
 	}
 
 	return &ret, nil
@@ -34,12 +40,16 @@ func GetUser(database *server.Database, email string, excludeCreds bool) (*User,
 CheckUserExists - Check to see if a user already exists in the database
 */
 func CheckUserExists(database *server.Database, email string) (bool, error) {
-	_, err := GetUser(database, email, true)
-	if !errors.Is(err, mongo.ErrNoDocuments) {
+	ok, err := database.Exists(bson.M{"email": email})
+	if err != nil {
+		return false, err
+	}
+
+	if ok {
 		return true, nil
 	}
 
-	return false, err
+	return false, nil
 }
 
 /*
@@ -47,10 +57,12 @@ CreateUser - Insert a new user into the database, and return any errors that may
 */
 func CreateUser(database *server.Database, user *User, password string, params *HashingParameters) error {
 	ok, err := CheckUserExists(database, user.Email)
+	if err != nil {
+		return fmt.Errorf("%w: (%s)", ErrCreateUserFailed, err)
+	}
+
 	if ok {
-		return fmt.Errorf("%w: User already exists", ErrCreateUserFailed)
-	} else if err != nil {
-		return err
+		return ErrUserAlreadyExists
 	}
 
 	creds, err := NewCredentials(password, params)
@@ -72,10 +84,12 @@ DeleteUser - Remove a single user from the database, and return any errors that 
 */
 func DeleteUser(database *server.Database, email string) error {
 	ok, err := CheckUserExists(database, email)
+	if err != nil {
+		return fmt.Errorf("%w: (%s)", ErrDeleteUserFailed, err)
+	}
+
 	if !ok {
-		return fmt.Errorf("%w: User does not exist", ErrDeleteUserFailed)
-	} else if err != nil {
-		return err
+		return ErrUserDoesNotExist
 	}
 
 	err = database.Delete(bson.M{"email": email})

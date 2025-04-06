@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"errors"
 	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
@@ -160,6 +161,21 @@ func (database *Database) Find(query bson.M, model interface{}, exclude ...strin
 	}
 
 	return nil
+}
+
+/*
+Exists - Check to see if a document exists from within the database
+*/
+func (database *Database) Exists(query bson.M) (bool, error) {
+	err := database.Collection().FindOne(context.Background(), query).Err()
+	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return false, nil
+		}
+		return false, err
+	}
+
+	return true, nil
 }
 
 /*
