@@ -144,6 +144,10 @@ func (database *Database) Find(query bson.M, model interface{}, exclude ...strin
 	if len(exclude) != 0 {
 		exclusions := bson.M{}
 		for _, value := range exclude {
+			if value == "" {
+				continue
+			}
+
 			exclusions[value] = 0
 		}
 

@@ -8,10 +8,15 @@ import (
 /*
 GetUser - Fetch a users metadata using its email address
 */
-func GetUser(database *server.Database, email string) (*User, error) {
+func GetUser(database *server.Database, email string, excludeCreds bool) (*User, error) {
 	var ret User
 
-	err := database.Find(bson.M{"email": email}, &ret)
+	exclusion := ""
+	if excludeCreds {
+		exclusion = "credentials"
+	}
+
+	err := database.Find(bson.M{"email": email}, &ret, exclusion)
 
 	if err != nil {
 		return nil, err
