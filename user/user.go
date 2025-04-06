@@ -11,6 +11,8 @@ type User struct {
 	// Metadata - General metadata for the structure
 	Metadata *metadata.Metadata `json:"metadata" bson:"metadata"`
 
+	Credentials *Credentials `json:"credentials" bson:"credentials"`
+
 	// Username - A distinct name for the user. Cannot conflict with other usernames
 	Username string `json:"username" bson:"username"`
 
