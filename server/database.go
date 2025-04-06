@@ -139,8 +139,18 @@ func (database *Database) Connect() {
 Find - Fetch a document from MongoDB and decode the results into the reference
 passed in the model parameter
 */
-func (database *Database) Find(query bson.M, model interface{}) error {
-	err := database.collection.FindOne(context.Background(), query).Decode(model)
+func (database *Database) Find(query bson.M, model interface{}, exclude ...string) error {
+	findOpts := options.FindOne()
+	if len(exclude) != 0 {
+		exclusions := bson.M{}
+		for _, value := range exclude {
+			exclusions[value] = 0
+		}
+
+		findOpts.SetProjection(exclusions)
+	}
+
+	err := database.collection.FindOne(context.Background(), query, findOpts).Decode(model)
 	if err != nil {
 		return err
 	}
