@@ -174,3 +174,15 @@ func (database *Database) Insert(model interface{}) error {
 
 	return nil
 }
+
+/*
+Delete - Remove a single document from the MongoDB collection
+*/
+func (database *Database) Delete(query bson.M) error {
+	_, err := database.Collection().DeleteOne(context.Background(), query)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

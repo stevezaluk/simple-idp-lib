@@ -9,6 +9,7 @@ import (
 )
 
 var ErrCreateUserFailed = errors.New("failed to create user")
+var ErrDeleteUserFailed = errors.New("failed to delete user")
 
 /*
 GetUser - Fetch a users metadata using its email address
@@ -59,6 +60,25 @@ func CreateUser(database *server.Database, user *User, password string, params *
 
 	user.Credentials = creds
 	err = database.Insert(user)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+/*
+DeleteUser - Remove a single user from the database, and return any errors that may occur
+*/
+func DeleteUser(database *server.Database, email string) error {
+	ok, err := CheckUserExists(database, email)
+	if !ok {
+		return fmt.Errorf("%w: User does not exist", ErrDeleteUserFailed)
+	} else if err != nil {
+		return err
+	}
+
+	err = database.Delete(bson.M{"email": email})
 	if err != nil {
 		return err
 	}
