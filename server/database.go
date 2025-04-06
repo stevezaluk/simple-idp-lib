@@ -161,3 +161,16 @@ func (database *Database) Find(query bson.M, model interface{}, exclude ...strin
 
 	return nil
 }
+
+/*
+Insert - Insert a single document into the MongoDB collection attached
+to this Database instance
+*/
+func (database *Database) Insert(model interface{}) error {
+	_, err := database.Collection().InsertOne(context.Background(), model)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
