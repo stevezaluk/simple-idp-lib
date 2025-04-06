@@ -69,7 +69,8 @@ type Credentials struct {
 }
 
 /*
-NewCredentials -
+NewCredentials - A constructor for the credentials object. This generates a new
+set of credentials for the structure
 */
 func NewCredentials(password string, params *HashingParameters) (*Credentials, error) {
 	salt, err := rand.Seed(int(params.SaltLength))
