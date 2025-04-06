@@ -62,7 +62,7 @@ type Credentials struct {
 	Params *HashingParameters `json:"params" bson:"params"`
 
 	// Salt - The base64 encoded versionsalt that is used when hashing the password
-	Salt string `json:"salt" bson:"key"`
+	Salt string `json:"salt" bson:"salt"`
 
 	// Key - The base64 encoded version of the password hash
 	Key string `json:"key" bson:"key"`
