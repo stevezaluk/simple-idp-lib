@@ -15,19 +15,19 @@ configuration file to improve runtime complexity on resource limited machines
 */
 type HashingParameters struct {
 	// KeyLength - The length of the resulting password hash
-	KeyLength uint32 `json:"key_len"`
+	KeyLength uint32 `json:"key_len" bson:"key_len"`
 
 	// SaltLength - The length of the salt used for hashing the password
-	SaltLength uint32 `json:"salt_len"`
+	SaltLength uint32 `json:"salt_len" bson:"salt_len"`
 
 	// Time - The number of iterations used to hash the password
-	Time uint32 `json:"time"`
+	Time uint32 `json:"time" bson:"time"`
 
 	// Memory - The bytes of memory that Argon2 is allowed to use when hashing passwords
-	Memory uint32 `json:"memory"`
+	Memory uint32 `json:"memory" bson:"memory"`
 
 	// Threads - The number of go-routines to use when hashing a password
-	Threads uint8 `json:"threads"`
+	Threads uint8 `json:"threads" bson:"threads"`
 }
 
 /*
@@ -59,13 +59,13 @@ func NewHashingParametersFromConfig() *HashingParameters {
 
 type Credentials struct {
 	// Params - The HashingParameters that were used to generate the hash
-	Params *HashingParameters
+	Params *HashingParameters `json:"params" bson:"params"`
 
 	// Salt - The base64 encoded versionsalt that is used when hashing the password
-	Salt string
+	Salt string `json:"salt" bson:"key"`
 
 	// Key - The base64 encoded version of the password hash
-	Key string
+	Key string `json:"key" bson:"key"`
 }
 
 /*
