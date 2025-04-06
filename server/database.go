@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"github.com/spf13/viper"
+	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 	"log/slog"
@@ -132,4 +133,17 @@ func (database *Database) Connect() {
 	database.client = client
 	database.database = database.client.Database(database.defaultDatabase)
 	database.collection = database.database.Collection(database.defaultCollection)
+}
+
+/*
+Find - Fetch a document from MongoDB and decode the results into the reference
+passed in the model parameter
+*/
+func (database *Database) Find(query bson.M, model interface{}) error {
+	err := database.collection.FindOne(context.Background(), query).Decode(model)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
