@@ -30,12 +30,26 @@ func GetUser(database *server.Database, email string, excludeCreds bool) (*User,
 }
 
 /*
+CheckUserExists - Check to see if a user already exists in the database
+*/
+func CheckUserExists(database *server.Database, email string) (bool, error) {
+	_, err := GetUser(database, email, true)
+	if !errors.Is(err, mongo.ErrNoDocuments) {
+		return true, nil
+	}
+
+	return false, err
+}
+
+/*
 CreateUser - Insert a new user into the database, and return any errors that may occur
 */
 func CreateUser(database *server.Database, user *User, password string, params *HashingParameters) error {
-	_, err := GetUser(database, user.Email, true)
-	if !errors.Is(err, mongo.ErrNoDocuments) {
+	ok, err := CheckUserExists(database, user.Email)
+	if ok {
 		return fmt.Errorf("%w: User already exists", ErrCreateUserFailed)
+	} else if err != nil {
+		return err
 	}
 
 	creds, err := NewCredentials(password, params)
