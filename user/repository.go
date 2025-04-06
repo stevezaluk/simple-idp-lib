@@ -8,10 +8,19 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
+// ErrUserAlreadyExists - Gets returned by CreateUser when a user under the same email has already been created
 var ErrUserAlreadyExists = errors.New("user: User already exists")
+
+// ErrUserDoesNotExist - Gets returned by GetUser and DeleteUser when a user does not exist
 var ErrUserDoesNotExist = errors.New("user: Does not exist")
+
+// ErrFetchUserFailed - Serves as a wrapper around database errors for the GetUser function
 var ErrFetchUserFailed = errors.New("user: Failed to fetch user")
+
+// ErrCreateUserFailed - Serves as a wrapper around database errors for the CreateUser function
 var ErrCreateUserFailed = errors.New("user: Failed to create user")
+
+// ErrDeleteUserFailed - Serves as a wrapper around database errors for the DeleteUser function
 var ErrDeleteUserFailed = errors.New("user: Failed to delete user")
 
 /*
