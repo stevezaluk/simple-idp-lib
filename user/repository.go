@@ -89,6 +89,28 @@ func CreateUser(database *server.Database, user *User, password string, params *
 }
 
 /*
+ReplaceUser - Replace a user with the model passed in the user parameter. Email is used
+to signify which user to replace
+*/
+func ReplaceUser(database *server.Database, user *User, email string) error {
+	ok, err := CheckUserExists(database, email)
+	if err != nil {
+		return fmt.Errorf("%w: (%s)", ErrDeleteUserFailed, err)
+	}
+
+	if !ok {
+		return ErrUserDoesNotExist
+	}
+
+	err = database.Replace(bson.M{"email": email}, user)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+/*
 DeleteUser - Remove a single user from the database, and return any errors that may occur
 */
 func DeleteUser(database *server.Database, email string) error {

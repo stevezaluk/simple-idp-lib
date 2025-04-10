@@ -192,6 +192,19 @@ func (database *Database) Insert(model interface{}) error {
 }
 
 /*
+Replace - Replace a single document in the MongoDB collection attached to
+this Database instance
+*/
+func (database *Database) Replace(query bson.M, model interface{}) error {
+	_, err := database.Collection().ReplaceOne(context.Background(), query, model)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+/*
 Delete - Remove a single document from the MongoDB collection
 */
 func (database *Database) Delete(query bson.M) error {
