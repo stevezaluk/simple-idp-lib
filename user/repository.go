@@ -34,7 +34,7 @@ func GetUser(database *server.Database, email string, excludeCreds bool) (*User,
 		exclusion = "credentials"
 	}
 
-	err := database.Find(bson.M{"email": email}, &ret, exclusion)
+	err := database.Find("user", bson.M{"email": email}, &ret, exclusion)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			return nil, ErrUserDoesNotExist
@@ -49,7 +49,7 @@ func GetUser(database *server.Database, email string, excludeCreds bool) (*User,
 CheckUserExists - Check to see if a user already exists in the database
 */
 func CheckUserExists(database *server.Database, email string) (bool, error) {
-	ok, err := database.Exists(bson.M{"email": email})
+	ok, err := database.Exists("user", bson.M{"email": email})
 	if err != nil {
 		return false, err
 	}
@@ -80,7 +80,7 @@ func CreateUser(database *server.Database, user *User, password string, params *
 	}
 
 	user.Credentials = creds
-	err = database.Insert(user)
+	err = database.Insert("user", user)
 	if err != nil {
 		return err
 	}
@@ -102,7 +102,7 @@ func ReplaceUser(database *server.Database, user *User, email string) error {
 		return ErrUserDoesNotExist
 	}
 
-	err = database.Replace(bson.M{"email": email}, user)
+	err = database.Replace("user", bson.M{"email": email}, user)
 	if err != nil {
 		return err
 	}
@@ -123,7 +123,7 @@ func DeleteUser(database *server.Database, email string) error {
 		return ErrUserDoesNotExist
 	}
 
-	err = database.Delete(bson.M{"email": email})
+	err = database.Delete("user", bson.M{"email": email})
 	if err != nil {
 		return err
 	}
