@@ -23,24 +23,18 @@ type Database struct {
 	// defaultDatabase - The database the client will connect to by default
 	defaultDatabase string
 
-	// defaultCollection - The collection that the client will use by default
-	defaultCollection string
-
 	// client - The MongoDB client that establishes our connection with the Database
 	client *mongo.Client
 
 	// database - The MongoDB database that controls our interaction with the data
 	database *mongo.Database
-
-	// collection - The MongoDB database that controls our interaction with the collection
-	collection *mongo.Collection
 }
 
 /*
 NewDatabase - A constructor for the database object. This exists in the event the caller
 wants to create a new database object without using Viper
 */
-func NewDatabase(hostname string, port int, defaultDatabase string, defaultCollection string) *Database {
+func NewDatabase(hostname string, port int, defaultDatabase string) *Database {
 	hosts := hostname + ":" + strconv.Itoa(port)
 
 	clientOptions := options.Client().
@@ -50,9 +44,8 @@ func NewDatabase(hostname string, port int, defaultDatabase string, defaultColle
 		SetTimeout(30 * time.Second)
 
 	return &Database{
-		options:           clientOptions,
-		defaultDatabase:   defaultDatabase,
-		defaultCollection: defaultCollection,
+		options:         clientOptions,
+		defaultDatabase: defaultDatabase,
 	}
 }
 
@@ -65,7 +58,6 @@ func NewDatabaseFromConfig() *Database {
 		viper.GetString("mongo.hostname"),
 		viper.GetInt("mongo.port"),
 		viper.GetString("mongo.default_database"),
-		viper.GetString("mongo.default_collection"),
 	)
 
 	database.SetSCRAMAuthentication(
@@ -90,13 +82,6 @@ Database - Getter function for returning a pointer to the MongoDB database
 */
 func (database *Database) Database() *mongo.Database {
 	return database.database
-}
-
-/*
-Collection - Getter function for returning a pointer to the MongoDB collection
-*/
-func (database *Database) Collection() *mongo.Collection {
-	return database.collection
 }
 
 /*
@@ -133,14 +118,13 @@ func (database *Database) Connect() {
 	slog.Info("Successfully connected to DB")
 	database.client = client
 	database.database = database.client.Database(database.defaultDatabase)
-	database.collection = database.database.Collection(database.defaultCollection)
 }
 
 /*
 Find - Fetch a document from MongoDB and decode the results into the reference
 passed in the model parameter
 */
-func (database *Database) Find(query bson.M, model interface{}, exclude ...string) error {
+func (database *Database) Find(collection string, query bson.M, model interface{}, exclude ...string) error {
 	findOpts := options.FindOne()
 	if len(exclude) != 0 {
 		exclusions := bson.M{}
@@ -155,7 +139,7 @@ func (database *Database) Find(query bson.M, model interface{}, exclude ...strin
 		findOpts.SetProjection(exclusions)
 	}
 
-	err := database.collection.FindOne(context.Background(), query, findOpts).Decode(model)
+	err := database.database.Collection(collection).FindOne(context.Background(), query, findOpts).Decode(model)
 	if err != nil {
 		return err
 	}
@@ -166,8 +150,8 @@ func (database *Database) Find(query bson.M, model interface{}, exclude ...strin
 /*
 Exists - Check to see if a document exists from within the database
 */
-func (database *Database) Exists(query bson.M) (bool, error) {
-	err := database.Collection().FindOne(context.Background(), query).Err()
+func (database *Database) Exists(collection string, query bson.M) (bool, error) {
+	err := database.database.Collection(collection).FindOne(context.Background(), query).Err()
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			return false, nil
@@ -182,8 +166,8 @@ func (database *Database) Exists(query bson.M) (bool, error) {
 Insert - Insert a single document into the MongoDB collection attached
 to this Database instance
 */
-func (database *Database) Insert(model interface{}) error {
-	_, err := database.Collection().InsertOne(context.Background(), model)
+func (database *Database) Insert(collection string, model interface{}) error {
+	_, err := database.database.Collection(collection).InsertOne(context.Background(), model)
 	if err != nil {
 		return err
 	}
@@ -195,8 +179,8 @@ func (database *Database) Insert(model interface{}) error {
 Replace - Replace a single document in the MongoDB collection attached to
 this Database instance
 */
-func (database *Database) Replace(query bson.M, model interface{}) error {
-	_, err := database.Collection().ReplaceOne(context.Background(), query, model)
+func (database *Database) Replace(collection string, query bson.M, model interface{}) error {
+	_, err := database.database.Collection(collection).ReplaceOne(context.Background(), query, model)
 	if err != nil {
 		return err
 	}
@@ -207,8 +191,8 @@ func (database *Database) Replace(query bson.M, model interface{}) error {
 /*
 Delete - Remove a single document from the MongoDB collection
 */
-func (database *Database) Delete(query bson.M) error {
-	_, err := database.Collection().DeleteOne(context.Background(), query)
+func (database *Database) Delete(collection string, query bson.M) error {
+	_, err := database.database.Collection(collection).DeleteOne(context.Background(), query)
 	if err != nil {
 		return err
 	}
